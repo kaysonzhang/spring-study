@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<Configuration status="warn" monitorInterval="0" shutdownHook="disable">
+    <!--定义一些参数变量-->
+    <Properties>
+        <Property name="backSize">31</Property>
+        <Property name="commPattern">%d{MM-dd HH:mm:ss.SSS} %-5level [%t] %l : %m %n</Property>
+        <Property name="logPath">./log/</Property>
+    </Properties>
+
+    <Appenders>
+        <!--定义你要的记录器<AppenderRef ref="记录器的名称"/>使用-->
+        <Console name="Console" target="system_out">
+            <PatternLayout pattern="${commPattern}"/>
+            <ThresholdFilter level="INFO"/>
+        </Console>
+
+        <RollingFile name="main" fileName="${logPath}/main.log"
+                     filePattern="${logPath}/main/main.%d{yyyy-MM.W}.log">
+            <ThresholdFilter level="INFO"/>
+            <PatternLayout pattern="${commPattern}"/>
+            <TimeBasedTriggeringPolicy/>
+            <DefaultRolloverStrategy max="${backSize}"/>
+        </RollingFile>
+
+        <RollingFile name="system" fileName="${logPath}/system.log"
+                     filePattern="${logPath}/system/system.%d{yyyy-MM.W}.log">
+            <PatternLayout pattern="${commPattern}"/>
+            <TimeBasedTriggeringPolicy/>
+            <DefaultRolloverStrategy max="${backSize}"/>
+        </RollingFile>
+
+
+    </Appenders>
+    <Loggers>
+        <!--定义你需要的包的日志级别-->
+        <logger name="com.kayson.web" level="DEBUG" additivity="true">
+            <AppenderRef ref="system"/>
+        </logger>
+
+        <logger name="org.springframework" level="info"/>
+        <logger name="org.mybatis" level="WARN"/>
+        <logger name="org.apache" level="WARN"/>
+
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="main"/>
+        </Root>
+
+    </Loggers>
+</Configuration>
